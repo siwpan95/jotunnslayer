@@ -220,6 +220,67 @@ class SaveLoadManager:
             self._log(f"读取失败: {e}")
             return None
 
+    # ---- 快照 + 日志增量模式（P3：日志即事实源） ----
+
+    def save_with_log(self, state: Any, slot: int = 0, log: Any = None) -> bool:
+        """存档 = 快照 + 日志偏移：快照写入存档文件，日志另行落盘。
+
+        :param state: 游戏状态对象（需 to_dict()）
+        :param slot: 槽位编号
+        :param log: WorldLog 实例（可选；提供则把当前 seq 记为 log_offset，
+                    并把日志写入同名 .log 文件）
+        :returns: 是否保存成功
+        """
+        path = self._slot_path(slot)
+        try:
+            data = {
+                "version": self.version,
+                "timestamp": time.time(),
+                "time_str": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "state_data": state.to_dict() if hasattr(state, "to_dict") else state,
+                "mode": "snapshot+log",
+                "log_offset": getattr(log, "seq", 0),
+            }
+            encoded = self._encode(data)
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(encoded)
+            if log is not None and hasattr(log, "save_to"):
+                log.save_to(path + ".log")
+            return True
+        except (OSError, TypeError, AttributeError) as e:
+            self._log(f"保存失败: {e}")
+            return False
+
+    def load_with_log(self, slot: int = 0, log: Any = None) -> Optional[dict]:
+        """读取快照+日志存档，返回 dict：{snapshot, log_offset, events_after}。
+
+        events_after 为快照之后的世界事实事件（可供投影折叠重建状态）。
+        旧格式存档（无 mode 字段）照常返回 {"snapshot": ..., "log_offset": 0, "events_after": []}。
+        """
+        path = self._slot_path(slot)
+        if not os.path.exists(path):
+            return None
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                raw = f.read()
+            data = self._decode(raw)
+        except OSError:
+            return None
+        if data is None:
+            return None
+        snapshot = data.get("state_data", data)
+        offset = int(data.get("log_offset", 0))
+        events_after: list = []
+        if data.get("mode") == "snapshot+log" and log is not None:
+            log_path = path + ".log"
+            if os.path.exists(log_path) and hasattr(log, "load_from"):
+                try:
+                    loaded = log.load_from(log_path)
+                    events_after = loaded.entries_since(offset)
+                except (OSError, ValueError):
+                    events_after = []
+        return {"snapshot": snapshot, "log_offset": offset, "events_after": events_after}
+
     # ---- 删除 ----
 
     def delete(self, slot: int) -> bool:

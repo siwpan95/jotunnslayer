@@ -16,11 +16,11 @@ from dataclasses import replace
 
 import numpy as np
 
-from vendor.allin_engine.audio.audio_system import AudioSystem
-from vendor.allin_engine.audio.synth import (
+from vendor.alloy.audio.audio_system import AudioSystem
+from vendor.alloy.audio.synth import (
     SynthVoice, synthesize_voice, OscType, EnvShape, SR,
 )
-from vendor.allin_engine.audio.music_gen import generate_music_wav, PRESETS
+from vendor.alloy.audio.music_gen import generate_music_wav, PRESETS
 
 _audio = None          # AudioSystem 单例；None = 不可用/未初始化
 _sfx = {}              # name -> WAV 路径

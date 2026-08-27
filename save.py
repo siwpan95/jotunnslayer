@@ -13,8 +13,8 @@ save.json 结构（version=1，字段随版本演进，旧档缺字段走默认�
 import os
 from dataclasses import dataclass, field
 
-from vendor.allin_engine.core.serializable import Serializable
-from vendor.allin_engine.systems.save_load import SaveLoadManager
+from vendor.alloy.core.serializable import Serializable
+from vendor.alloy.systems.save_load import SaveLoadManager
 
 SAVE_VERSION = 1
 SLOT = 0

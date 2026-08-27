@@ -179,7 +179,7 @@ HUD 右中显示当前连杀数 + 4s 倒计时条 + buff 状态。
 - 每局结束（胜利或阵亡）自动结算：金币入账、终身统计（总局/胜场/总击杀/总伤害）、最佳记录（等级/击杀/存活时长）写入 `saves/save_00.json`
 - 存档带 `version` 字段（当前 v1），旧档缺字段自动补默认值（`save.py`）
 - 金币来源：普通敌 = 经验等量、精英 +50、Boss +200；HUD 左上显示本局金币，标题屏与结算屏显示累计金币与最佳记录
-- 文件读写借用 `vendor/allin_engine/systems/save_load.py`（多槽位/版本检查/时间戳）
+- 文件读写借用 `vendor/alloy/systems/save_load.py`（多槽位/版本检查/时间戳）
 
 ## 程序化音频（Phase 8 核心）
 
@@ -249,7 +249,7 @@ jotunnslayer_py/
 ├── skills.py        ← 角色主动技（Q 键，dispatch 到 3 种技能实现）
 ├── quests.py        ← 局内限时任务（歼灭/收集/守点）
 ├── hazards.py       ← 地图机关（矿坑矿车 / 神庙神柱脉冲）
-├── vendor/          ← 从 allin_engine (MIT) vendor 的音频/存档/事件/字体子集
+├── vendor/          ← 从 alloy (MIT) vendor 的音频/存档/事件/字体子集
 ├── tests/           ← 11 套定向测试（python tests\test_x.py 运行）
 ├── shots/           ← 视觉快照 PNG（运行 shots.py 生成，共 11 张）
 ├── reports/         ← 平衡模拟报告与原始数据（balance_report.md / balance_raw.txt 等）

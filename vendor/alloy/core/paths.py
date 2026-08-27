@@ -8,7 +8,7 @@
 - 可写目录（saves/logs）使用用户数据目录
 
 用法：
-    from allin_engine.core.paths import ROOT, get_assets_dir
+    from alloy.core.paths import ROOT, get_assets_dir
 
     sprite_path = get_assets_dir() / "sprites" / "player.png"
 """
@@ -21,7 +21,7 @@ from pathlib import Path
 
 
 def _get_package_root() -> Path:
-    """返回 allin_engine 包所在的目录。
+    """返回 alloy 包所在的目录。
 
     优先级：
     1. 打包环境（PyInstaller / Nuitka）：sys._MEIPASS
@@ -41,21 +41,21 @@ def _get_package_root() -> Path:
     # 优先使用 importlib.resources（兼容 pip install）
     try:
         from importlib.resources import files
-        pkg_path = files("allin_engine")
+        pkg_path = files("alloy")
         if pkg_path.is_dir():
-            return Path(str(pkg_path)).parent  # 项目根（allin_engine 的父目录）
+            return Path(str(pkg_path)).parent  # 项目根（alloy 的父目录）
     except Exception:
         pass
 
-    # 开发环境回退：core/paths.py → allin_engine/ → 项目根
+    # 开发环境回退：core/paths.py → alloy/ → 项目根
     return Path(__file__).resolve().parent.parent.parent
 
 
 def _get_user_data_dir() -> Path:
     """返回用户数据目录（跨平台）。
 
-    - Windows: %APPDATA%/allin_engine
-    - Linux/macOS: ~/.local/share/allin_engine 或 ~/.allin_engine
+    - Windows: %APPDATA%/alloy
+    - Linux/macOS: ~/.local/share/alloy 或 ~/.alloy
     """
     # 环境变量覆盖
     env_data = os.environ.get("ALLIN_USER_DATA")
@@ -64,10 +64,10 @@ def _get_user_data_dir() -> Path:
 
     if sys.platform == "win32":
         base = os.environ.get("APPDATA", os.path.expanduser("~"))
-        return Path(base) / "allin_engine"
+        return Path(base) / "alloy"
     else:
         xdg = os.environ.get("XDG_DATA_HOME", os.path.expanduser("~/.local/share"))
-        return Path(xdg) / "allin_engine"
+        return Path(xdg) / "alloy"
 
 
 # ── 路径常量 ──────────────────────────────────────────
@@ -75,7 +75,7 @@ def _get_user_data_dir() -> Path:
 ROOT: Path = _get_package_root()
 """项目 / 资源根目录。"""
 
-ENGINE_DIR: Path = ROOT / "allin_engine"
+ENGINE_DIR: Path = ROOT / "alloy"
 """引擎根目录。"""
 
 CORE_DIR: Path = ENGINE_DIR / "core"

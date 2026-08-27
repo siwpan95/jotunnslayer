@@ -1,0 +1,27 @@
+engine: alloy
+engine_version: 1.0.0
+synced_at: '2026-08-23 21:15:33'
+customized_files:
+- path: __init__.py
+  kind: modified
+  hash: 2311a02873606918b0a2ef739f2acff0
+  base_hash: fe8533b3d0f94505865f0261f6a9ac32
+- path: audio\__init__.py
+  kind: modified
+  hash: de359ab2fc87532eb7b740502bcd22d6
+  base_hash: 5d5718507ac5dd4671b8516d09f265c8
+- path: core\__init__.py
+  kind: modified
+  hash: 8a3387108bedd2933f0184c99dc06c75
+  base_hash: fe9b941796931d750c8393ec0df47a4c
+- path: systems\__init__.py
+  kind: modified
+  hash: a63e25dc207f60b82bffe24ac10f8c41
+  base_hash: 73514583e8f16decb617c2f42ae770a7
+- path: utils\__init__.py
+  kind: modified
+  hash: 1faecd370529499161df9c19d46abe46
+  base_hash: 928b6c9af1a8c9b60fedc08dc1b7de3c
+take_base: [audio/audio_system.py, audio/music_gen.py, audio/synth.py, core/deps.py, core/event_bus.py, core/paths.py, core/serializable.py, systems/save_load.py, utils/font.py, utils/json_loader.py, utils/logger.py, utils/text_fmt.py]
+upgrades_applied: [core\event_bus.py, audio\music_gen.py, core\serializable.py, systems\save_load.py, utils\font.py]
+config:

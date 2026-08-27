@@ -53,7 +53,7 @@ import fx
 import ui
 import boons as B
 import bosses as BOSSAI
-from vendor.allin_engine.core.event_bus import EventBus
+from vendor.alloy.core.event_bus import EventBus
 from entities import (Player, Enemy, Gem, Shockwave, Shrine, init_gem_sprites,
                       EnemyBullet, Ally, Geyser, Swing, BreathZone, Food, Chest)
 from weapons import Weapon, Bullet, HomingBullet, init_sprites

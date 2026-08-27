@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""定向验证：vendored allin_engine 子集（音频合成/存档/事件总线/CJK 字体）。
+"""定向验证：vendored alloy 子集（音频合成/存档/事件总线/CJK 字体）。
 
 无头运行，覆盖四个冒烟点：
   1. synth 合成波形 -> pygame.Sound（dummy 音频驱动）
@@ -23,14 +23,14 @@ import numpy as np
 import pygame
 import pygame.sndarray
 
-from vendor.allin_engine.audio.synth import (
+from vendor.alloy.audio.synth import (
     SynthVoice, synthesize_voice, OscType, EnvShape, SR,
 )
-from vendor.allin_engine.audio.music_gen import generate_music_wav, PRESETS
-from vendor.allin_engine.core.event_bus import EventBus
-from vendor.allin_engine.core.serializable import Serializable
-from vendor.allin_engine.systems.save_load import SaveLoadManager
-from vendor.allin_engine.utils.font import load_local_font
+from vendor.alloy.audio.music_gen import generate_music_wav, PRESETS
+from vendor.alloy.core.event_bus import EventBus
+from vendor.alloy.core.serializable import Serializable
+from vendor.alloy.systems.save_load import SaveLoadManager
+from vendor.alloy.utils.font import load_local_font
 
 
 def test_synth():

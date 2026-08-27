@@ -1,7 +1,8 @@
 """
-Serializable — 为 dataclass 提供通用 to_dict() / from_dict() 支持。
+Serializable / Snapshotable — 为 dataclass 提供通用 to_dict() / from_dict() 支持，
+以及为需要运行时依赖重建的领域对象提供 to_snapshot() / from_snapshot() 模式。
 
-子类只需标记需要特殊处理的字段，即可自动序列化/反序列化。
+Serializable 子类只需标记需要特殊处理的字段，即可自动序列化/反序列化。
 
 使用方式：
 
@@ -154,3 +155,45 @@ def _extract_list_item_type(type_hint: Any) -> Any:
     if args:
         return args[0]
     return None
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# Snapshotable — 需要运行时依赖重建的领域对象快照接口
+# （自 dwarf_scrolls 内联副本回灌：P2 双副本整合"保留最新版"）
+# ─────────────────────────────────────────────────────────────────────────
+
+S = TypeVar("S", bound="Snapshotable")
+
+
+class Snapshotable:
+    """为需要运行时依赖重建的领域对象提供快照/还原模式。
+
+    与 Serializable 的区别：
+      - Serializable 基于 dataclass 自动序列化字段；适用于简单数据容器。
+      - Snapshotable 为手动实现的快照接口；适用于需要在重建时传入运行时依赖
+        （如 world, player, registry, event_bus 等）的领域对象。
+
+    子类必须实现：
+        to_snapshot(self) -> dict
+        from_snapshot(cls, data: dict, **deps) -> Snapshotable   (classmethod)
+    """
+
+    def to_snapshot(self) -> dict[str, Any]:
+        """返回对象当前运行态的可序列化快照 dict。
+
+        子类必须覆盖此方法，返回仅含标量/列表/dict 的快照数据，
+        确保 json.dumps() 可直接序列化。
+        """
+        raise NotImplementedError(
+            f"{type(self).__name__} 必须实现 to_snapshot()")
+
+    @classmethod
+    def from_snapshot(cls: type[S], data: dict[str, Any], **deps: Any) -> S:
+        """由快照 dict + 运行时依赖重建对象。
+
+        子类必须覆盖此方法。**deps 用于传入运行时依赖
+        （如 world, player, registry, event_bus 等），
+        这些依赖不在快照中持久化，而是由调用方提供。
+        """
+        raise NotImplementedError(
+            f"{cls.__name__} 必须实现 from_snapshot(data, **deps)")

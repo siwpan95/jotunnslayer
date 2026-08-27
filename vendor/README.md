@@ -2,12 +2,12 @@
 
 本目录存放从外部项目选择性复制的（vendored）模块，保持本项目零外部运行时依赖。
 
-## 来源：allin_engine
+## 来源：alloy
 
-- 上游路径：`G:/games/allin_engine`（作者 "全哥"，MIT License）
+- 上游路径：`G:/games/alloy`（作者 "全哥"，MIT License）
 - vendored 时间：2026 年（本项目 Phase 6/8 落地阶段）
 - 许可：MIT。原版权声明保留在各文件头部，此处附上游 LICENSE 摘要：
-  > Copyright (c) allin_engine 作者，特此免费授予任何获得本软件及相关文档文件副本的人不受限制地处理本软件的权利……（详见 G:/games/allin_engine/LICENSE）
+  > Copyright (c) alloy 作者，特此免费授予任何获得本软件及相关文档文件副本的人不受限制地处理本软件的权利……（详见 G:/games/alloy/LICENSE）
 
 ### 复制的文件与用途
 
@@ -27,8 +27,8 @@
 
 ### 相对上游的修改
 
-1. `audio/music_gen.py`：`from allin_engine.audio.synth` → `from .synth`
-2. `utils/font.py`：`from allin_engine.core.paths` → `from ..core.paths`（原 try/except 兜底保留）
+1. `audio/music_gen.py`：`from alloy.audio.synth` → `from .synth`
+2. `utils/font.py`：`from alloy.core.paths` → `from ..core.paths`（原 try/except 兜底保留）
 
 ### 同步上游
 

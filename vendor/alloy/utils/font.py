@@ -39,7 +39,7 @@ from typing import Dict, List, Optional, Tuple, Union
 # ================================================================
 
 try:
-    from ..core.paths import get_fonts_dir
+    from vendor.alloy.core.paths import get_fonts_dir
 except Exception:  # pragma: no cover - 防御性兜底
     def get_fonts_dir() -> Path:  # type: ignore
         return Path(__file__).resolve().parent.parent / "fonts"
@@ -185,12 +185,24 @@ def _resolve_local_font_path(name: Optional[str] = None) -> Optional[Path]:
     return None
 
 
+#: 引擎随包分发的默认字体文件名 stem（大小写不敏感），
+#: 保证各项目即使往 fonts/ 目录添加自己的字体，默认字体也保持稳定。
+BUNDLED_FONT_STEM: str = "baocanmou"
+
+
 def get_default_local_font_name() -> Optional[str]:
-    """返回默认本地字体别名（第一个发现的本地字体），无则返回 None。"""
+    """返回默认本地字体别名。
+
+    优先引擎随包分发的字体（BUNDLED_FONT_STEM，跨项目稳定）；
+    否则返回第一个发现的本地字体；无则 None。
+    """
     _ensure_discovered()
-    if _LOCAL_FONT_REGISTRY:
-        return next(iter(_LOCAL_FONT_REGISTRY.keys()))
-    return None
+    if not _LOCAL_FONT_REGISTRY:
+        return None
+    for alias in _LOCAL_FONT_REGISTRY:
+        if BUNDLED_FONT_STEM in alias:
+            return alias
+    return next(iter(_LOCAL_FONT_REGISTRY.keys()))
 
 
 def list_local_fonts() -> List[Tuple[str, str]]:

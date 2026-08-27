@@ -9,7 +9,7 @@ from data import PASSIVES, WEAPON_MAX_LEVEL, CHARS, WEAPONS, MAPS, BOSSES
 from settings import DIFFICULTIES
 import meta
 import boons as B
-from vendor.allin_engine.utils.font import load_local_font as _local_font
+from vendor.alloy.utils.font import load_local_font as _local_font
 
 _FONT_CACHE = {}
 
@@ -18,7 +18,7 @@ def font(size, bold=False):
     key = (size, bold)
     f = _FONT_CACHE.get(key)
     if f is None:
-        # 本地打包 CJK 手写字体优先（vendor/allin_engine/fonts），失败回退系统字体
+        # 本地打包 CJK 手写字体优先（vendor/alloy/fonts），失败回退系统字体
         try:
             f = _local_font(size, bold=bold)
         except Exception:

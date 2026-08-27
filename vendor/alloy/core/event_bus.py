@@ -52,6 +52,8 @@ class EventTypes:
     BRANCH_TAKEN: str = "branch_taken"
     CHOICE_MADE: str = "choice_made"
     SHARD_FOUND: str = "shard_found"
+    SHARD_HIDDEN: str = "shard_hidden"        # 自 dwarf_scrolls 回灌
+    QUEST_COMPLETE: str = "quest_complete"    # 自 dwarf_scrolls 回灌
     DREAM_ENTER: str = "dream_enter"
     DREAM_EXIT: str = "dream_exit"
 
@@ -297,6 +299,60 @@ class EventBus:
             被通知的监听器数量
         """
         return self.emit(event_type, kwargs)
+
+    # ── 分派模式（A3：emit / waterfall / serial）──────────
+    #
+    # 分派模式是事件的公开契约（Cordis 语义）：
+    #   emit      —— 观察者模式，所有监听器各收到一次 data，无返回值（现有行为，不变）
+    #   waterfall —— 中间件链：handler(value, next)，调用 next() 委托下游、可改写值、
+    #                不调用 next 即短路；返回值沿链传播
+    #   serial    —— 顺序投票：监听器依次执行，返回非 None 即短路并作为结果
+    # 同一事件类型必须固定用一种模式订阅/分发。
+
+    def waterfall(self, event_type: str, value: Any = None):
+        """中间件链分发：监听器签名 handler(value, next)。
+
+        - 调用 next(new_value) 把（可能改写的）值交给下一个监听器；
+        - 不调用 next 即短路，当前返回值成为整条链的结果；
+        - 无监听器时原样返回 value。
+
+        用法（伤害结算示例）::
+
+            @bus.subscribe("combat_damage")
+            def double_damage(value, next):
+                return next(value * 2)
+        """
+        listeners = list(self.listeners.get(event_type, []))
+
+        def _dispatch(index: int, current: Any):
+            if index >= len(listeners):
+                return current
+            handler = listeners[index]
+
+            def _next(*new_value: Any):
+                nxt = new_value[0] if new_value else current
+                return _dispatch(index + 1, nxt)
+
+            return handler(current, _next)
+
+        return _dispatch(0, value)
+
+    def serial(self, event_type: str, value: Any = None):
+        """顺序投票分发：监听器签名 handler(value) -> 结果。
+
+        返回非 None 的结果即短路并作为最终结果；全部返回 None 则结果为 None。
+
+        用法（开门判定示例）::
+
+            @bus.subscribe("can_pass")
+            def locked_door(value):
+                return "locked" if value.get("door") == "locked" else None
+        """
+        for handler in list(self.listeners.get(event_type, [])):
+            result = handler(value)
+            if result is not None:
+                return result
+        return None
 
     # ── 清除 ──────────────────────────────────────────
 

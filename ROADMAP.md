@@ -24,11 +24,11 @@
 
 ---
 
-## 本轮增量（Phase 4-8 的首批落地，借力 allin_engine）
+## 本轮增量（Phase 4-8 的首批落地，借力 alloy）
 
 | 维度 | 落地内容 | 对应阶段 |
 |---|---|---|
-| 基建 | vendored `allin_engine` 子集（audio/save_load/event_bus/serializable/font，MIT 归属见 vendor/README.md） | — |
+| 基建 | vendored `alloy` 子集（audio/save_load/event_bus/serializable/font，MIT 归属见 vendor/README.md） | — |
 | 字体 | 打包 CJK 手写字体全 UI 生效（不依赖系统字体，跨环境稳定） | 打磨 |
 | 事件总线 | `Game.bus` 发布 14 类事件（kill/level_up/combo_tier/boss_spawn/boon_taken/gold_gain…），跨 reset 存活 | Phase 5/6 铺路 |
 | 存档 | `save.json` v1（version 字段 + 缺字段迁移 + 多槽位读写），金币/最佳记录/终身统计/音量设置 | Phase 6 核心子集 |
